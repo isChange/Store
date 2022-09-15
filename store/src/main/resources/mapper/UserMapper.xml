@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.store.mapper.UserMapper">
+    <sql id="modified">modified_user = #{modifiedUser},
+                        modified_time = #{modifiedTime}</sql>
+<!--    Integer insertUser(User user);-->
+        <insert id="insertUser" useGeneratedKeys="true" keyProperty="uid">
+            INSERT INTO t_user (
+                username, password, salt, phone, email, gender,
+                avatar, is_delete, created_user, created_time, modified_user, modified_time
+                ) VALUES (
+                          #{username}, #{password}, #{salt}, #{phone}, #{email}, #{gender}, #{avatar}, #{isDelete},
+                          #{createdUser}, #{createdTime}, #{modifiedUser}, #{modifiedTime}
+                          )
+        </insert>
+
+<!--    Integer updateUserForPassword(Integer uid,String password ,-->
+<!--                                  String ModifiedUser , String ModifiedTime);-->
+    <update id="updateUserForPassword">
+        UPDATE t_user SET password = #{password} , modified_user = #{modifiedUser},
+                            modified_time = #{modifiedTime} WHERE uid = #{uid}
+    </update>
+
+<!--    Integer updateUserForPersonResource-->
+    <update id="updateUserForPersonResource">
+        UPDATE t_user SET  phone = #{phone},email = #{email} ,
+                          modified_user = #{modifiedUser},
+                          modified_time = #{modifiedTime},
+                          gender = #{gender}
+        WHERE uid = #{uid}
+    </update>
+<!--    Integer updateUserAvatar(@Param("avatar") String avatar , @Param("modifiedUser") String modifiedUser,-->
+<!--    @Param("modifiedTime") String modifiedTime, @Param("uid") Integer uid);-->
+    <update id="updateUserAvatar">
+        UPDATE t_user SET avatar = #{avatar} ,
+                          <include refid="modified"></include>
+                          WHERE uid = #{uid}
+    </update>
+    <!--        User findUserByUsername(String username)-->
+        <select id="findUserByUsername" resultType="User">
+            SELECT * FROM t_user WHERE username = #{username}
+        </select>
+
+
+    <select id="findUserByUid" resultType="User">
+        SELECT * FROM t_user WHERE uid = #{uid}
+    </select>
+</mapper>
